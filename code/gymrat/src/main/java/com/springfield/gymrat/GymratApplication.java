@@ -13,5 +13,4 @@ public class GymratApplication {
     }
 
 }
-//TODO: 解决版本兼容问题
-//TODO: 检查并接口测试登录功能，成功后提交至仓库
+//TODO: 完成登录功能
