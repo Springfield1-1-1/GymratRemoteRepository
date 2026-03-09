@@ -13,3 +13,9 @@ mybatis-plus:
 
 server:
   port: 8080
+
+jwt:
+  secret: springfield-gymrat-secret-key-2024-please-change-in-production  # 生产环境一定要改！
+  expiration:
+    day: 86400      # 1天（秒）
+    month: 2592000  # 30天（秒）
