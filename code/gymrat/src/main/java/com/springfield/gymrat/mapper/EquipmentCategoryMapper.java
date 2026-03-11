@@ -17,7 +17,7 @@ public interface EquipmentCategoryMapper extends BaseMapper<EquipmentCategory> {
     @Select("SELECT ec.*, COUNT(e.id) as equipment_count " +
             "FROM equipment_category ec " +
             "LEFT JOIN equipment e ON ec.id = e.category_id " +
-            "GROUP BY ec.id " +
+            "GROUP BY ec.id , ec.sort_order " +
             "ORDER BY ec.sort_order")
     List<EquipmentCategory> selectCategoriesWithCount();
 
