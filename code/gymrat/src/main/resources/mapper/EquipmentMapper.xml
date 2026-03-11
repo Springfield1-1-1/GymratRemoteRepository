@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springfield.gymrat.mapper.EquipmentMapper">
+
+    <resultMap id="EquipmentVOMap" type="com.springfield.gymrat.vo.EquipmentVO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="targetMuscles" column="target_muscles"/>
+        <result property="usageDescription" column="usage_description"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryCode" column="category_code"/>
+    </resultMap>
+
+    <select id="selectEquipmentPage" resultMap="EquipmentVOMap">
+        SELECT
+        e.id,
+        e.name,
+        e.image_url,
+        e.target_muscles,
+        e.usage_description,
+        e.category_id,
+        ec.category_name,
+        ec.category_code
+        FROM equipment e
+        LEFT JOIN equipment_category ec ON e.category_id = ec.id
+        <where>
+            <if test="query.categoryCode != null and query.categoryCode != ''">
+                AND ec.category_code = #{query.categoryCode}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND (
+                e.name LIKE CONCAT('%', #{query.keyword}, '%')
+                OR e.target_muscles LIKE CONCAT('%', #{query.keyword}, '%')
+                OR e.usage_description LIKE CONCAT('%', #{query.keyword}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY e.sort_order, e.create_time DESC
+    </select>
+
+</mapper>
