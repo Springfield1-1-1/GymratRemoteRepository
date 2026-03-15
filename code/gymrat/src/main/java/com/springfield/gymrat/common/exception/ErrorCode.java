@@ -21,6 +21,7 @@ public enum ErrorCode {
     USER_PASSWORD_ERROR(2002, "密码错误"),
     USER_NOT_LOGIN(2003, "用户未登录"),
     USER_DISABLED(2004, "用户已被禁用"),
+    USERNAME_ALREADY_EXISTS(1002, "用户名已存在"),
 
     // 业务错误 3000-3999
     BUSINESS_ERROR(3000, "业务错误"),

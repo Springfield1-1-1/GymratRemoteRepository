@@ -5,6 +5,11 @@ spring:
     username: root
     password: 123456
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 30MB
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -25,3 +30,11 @@ jwt:
   expiration:
     day: 86400      # 1天（秒）
     month: 2592000  # 30天（秒）
+
+aliyun:
+  oss:
+    access-key-id: ${ALIYUN_OSS_ACCESS_KEY_ID}
+    access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucket-name: springfield-gymrat
+

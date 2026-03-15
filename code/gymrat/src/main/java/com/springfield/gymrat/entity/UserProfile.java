@@ -16,8 +16,6 @@ public class UserProfile implements Serializable {
     @TableId(value = "user_id", type = IdType.INPUT)
     private Long userId;
 
-    private String nickname;
-
     private Integer gender = 0;
 
     private LocalDate birthday;
@@ -27,8 +25,6 @@ public class UserProfile implements Serializable {
     private BigDecimal weight;
 
     private String fitnessGoal;
-
-    private Integer experienceLevel = 1;
 
     private String bio = "";
 

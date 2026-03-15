@@ -5,16 +5,21 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.springfield.gymrat.common.exception.BusinessException;
 import com.springfield.gymrat.dto.LoginDTO;
 import com.springfield.gymrat.dto.LoginResultDTO;
+import com.springfield.gymrat.dto.ProfileUpdateDTO;
 import com.springfield.gymrat.dto.RegisterDTO;
 import com.springfield.gymrat.entity.User;
+import com.springfield.gymrat.entity.UserProfile;
 import com.springfield.gymrat.mapper.UserMapper;
 import com.springfield.gymrat.service.UserService;
+import com.springfield.gymrat.mapper.UserProfileMapper;
+import com.springfield.gymrat.vo.UserProfileVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.springfield.gymrat.common.jwt.JwtUtil;
+import com.springfield.gymrat.common.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +31,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserProfileMapper userProfileMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -110,5 +116,113 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         log.info("用户登录成功: username={}, userId={}", user.getUsername(), user.getId());
         return result;
+    }
+
+    public UserProfileVO getProfile(Long userId) {
+        User user = getById(userId);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_EXIST.getMessage());
+        }
+
+        UserProfile profile = userProfileMapper.selectById(userId);
+
+        UserProfileVO vo = new UserProfileVO();
+        vo.setUserId(user.getId());
+        vo.setUsername(user.getUsername());
+        vo.setAvatarUrl(user.getAvatarUrl());
+
+        if (profile != null) {
+            vo.setGender(profile.getGender());
+            vo.setBirthday(profile.getBirthday());
+            vo.setHeight(profile.getHeight());
+            vo.setWeight(profile.getWeight());
+            vo.setFitnessGoal(profile.getFitnessGoal());
+            vo.setBio(profile.getBio());
+        }
+
+        return vo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProfile(Long userId, ProfileUpdateDTO dto) {
+        UserProfile profile = userProfileMapper.selectById(userId);
+
+        if (profile == null) {
+            profile = new UserProfile();
+            profile.setUserId(userId);
+            if (dto.getGender() != null) {
+                profile.setGender(dto.getGender());
+            }
+            if (dto.getBirthday() != null) {
+                profile.setBirthday(dto.getBirthday());
+            }
+            if (dto.getHeight() != null) {
+                profile.setHeight(dto.getHeight());
+            }
+            if (dto.getWeight() != null) {
+                profile.setWeight(dto.getWeight());
+            }
+            if (dto.getFitnessGoal() != null) {
+                profile.setFitnessGoal(dto.getFitnessGoal());
+            }
+            if (dto.getBio() != null) {
+                profile.setBio(dto.getBio());
+            }
+            userProfileMapper.insert(profile);
+        } else {
+            if (dto.getGender() != null) {
+                profile.setGender(dto.getGender());
+            }
+            if (dto.getBirthday() != null) {
+                profile.setBirthday(dto.getBirthday());
+            }
+            if (dto.getHeight() != null) {
+                profile.setHeight(dto.getHeight());
+            }
+            if (dto.getWeight() != null) {
+                profile.setWeight(dto.getWeight());
+            }
+            if (dto.getFitnessGoal() != null) {
+                profile.setFitnessGoal(dto.getFitnessGoal());
+            }
+            if (dto.getBio() != null) {
+                profile.setBio(dto.getBio());
+            }
+            userProfileMapper.updateById(profile);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateUsername(Long userId, String username) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, username);
+        wrapper.ne(User::getId, userId);
+
+        Long count = baseMapper.selectCount(wrapper);
+        if (count > 0) {
+            throw new BusinessException(ErrorCode.USER_EXIST.getMessage());
+        }
+
+        User user = getById(userId);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_EXIST.getMessage());
+        }
+
+        user.setUsername(username);
+        baseMapper.updateById(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAvatar(Long userId, String avatarUrl) {
+        User user = getById(userId);
+        if (user == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_EXIST.getMessage());
+        }
+
+        user.setAvatarUrl(avatarUrl);
+        baseMapper.updateById(user);
     }
 }
