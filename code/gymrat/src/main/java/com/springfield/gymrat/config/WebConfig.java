@@ -1,5 +1,6 @@
 package com.springfield.gymrat.config;
 
+import com.springfield.gymrat.common.interceptor.AdminAuthInterceptor;
 import com.springfield.gymrat.common.interceptor.JwtInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     private final JwtInterceptor jwtInterceptor;
 
+    private final AdminAuthInterceptor adminAuthInterceptor;
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor)
@@ -22,5 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/public/**",
                         "/error"
                 );
+        registry.addInterceptor(adminAuthInterceptor)
+                .addPathPatterns("/api/admin/**");  // 保护所有 /api/admin 开头的接口
     }
 }

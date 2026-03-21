@@ -96,7 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 Boolean.TRUE.equals(dto.getRememberMe())
         );
 
-        // 5. 更新最后登录时间（可选）
+        // 5. 更新最后登录时间
         user.setUpdatedAt(LocalDateTime.now());
         userMapper.updateById(user);
 
@@ -114,7 +114,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             result.setExpiresIn(24L * 60 * 60);  // 1天
         }
 
-        log.info("用户登录成功: username={}, userId={}", user.getUsername(), user.getId());
+        // 7. 设置用户角色
+        String role = "admin".equals(user.getUsername()) ? "admin" : "user";
+        result.setRole(role);
+
+        log.info("用户登录成功: username={}, userId={}, role={}", user.getUsername(), user.getId(), role);
         return result;
     }
 
