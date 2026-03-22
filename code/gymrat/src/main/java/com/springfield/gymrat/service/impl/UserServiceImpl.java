@@ -12,6 +12,7 @@ import com.springfield.gymrat.entity.UserProfile;
 import com.springfield.gymrat.mapper.UserMapper;
 import com.springfield.gymrat.service.UserService;
 import com.springfield.gymrat.mapper.UserProfileMapper;
+import com.springfield.gymrat.vo.DataOverviewVO;
 import com.springfield.gymrat.vo.UserProfileVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.springfield.gymrat.common.jwt.JwtUtil;
 import com.springfield.gymrat.common.exception.ErrorCode;
-
+import com.springfield.gymrat.mapper.EquipmentMapper;
+import com.springfield.gymrat.mapper.GymStoreMapper;
+import com.springfield.gymrat.mapper.CoachMapper;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -32,6 +35,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final UserProfileMapper userProfileMapper;
+    private final EquipmentMapper equipmentMapper;
+    private final CoachMapper coachMapper;
+    private final GymStoreMapper gymStoreMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -228,5 +234,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         user.setAvatarUrl(avatarUrl);
         baseMapper.updateById(user);
+    }
+
+    @Override
+    public DataOverviewVO getDataOverview() {
+        // 统计总用户数
+        Long totalUsers = baseMapper.selectCount(null);
+
+        // 统计器械数
+        Long totalEquipment = equipmentMapper.selectCount(null);
+
+        // 统计门店数
+        Long totalStores = gymStoreMapper.selectCount(null);
+
+        // 统计教练数
+        Long totalCoaches = coachMapper.selectCount(null);
+
+        DataOverviewVO vo = new DataOverviewVO();
+        vo.setTotalUsers(totalUsers);
+        vo.setTotalEquipment(totalEquipment);
+        vo.setTotalStores(totalStores);
+        vo.setTotalCoaches(totalCoaches);
+
+        return vo;
     }
 }

@@ -6,6 +6,7 @@ import com.springfield.gymrat.dto.ProfileUpdateDTO;
 import com.springfield.gymrat.dto.RegisterDTO;
 import com.springfield.gymrat.dto.LoginDTO;
 import com.springfield.gymrat.entity.User;
+import com.springfield.gymrat.vo.DataOverviewVO;
 import com.springfield.gymrat.vo.UserProfileVO;
 
 public interface UserService extends IService<User>{
@@ -36,4 +37,9 @@ public interface UserService extends IService<User>{
      * 更新用户头像
      */
     void updateAvatar(Long userId, String avatarUrl);
+
+    /**
+     * 获取数据概览
+     */
+    DataOverviewVO getDataOverview();
 }

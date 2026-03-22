@@ -45,6 +45,7 @@ public class JwtUtil {
         if ("admin".equals(username)) {
             role = "admin";
         }
+        claims.put("role", role);
 
         long expiration = rememberMe ? expirationMonth : expirationDay;
         Date now = new Date();
