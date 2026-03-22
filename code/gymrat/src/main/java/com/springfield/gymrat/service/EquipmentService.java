@@ -2,6 +2,7 @@ package com.springfield.gymrat.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.springfield.gymrat.dto.EquipmentQueryDTO;
+import com.springfield.gymrat.dto.EquipmentSaveDTO;
 import com.springfield.gymrat.entity.Equipment;
 import com.springfield.gymrat.vo.EquipmentVO;
 import com.springfield.gymrat.vo.PageResult;
@@ -22,4 +23,14 @@ public interface EquipmentService extends IService<Equipment> {
      * 根据分类代码统计器械数量
      */
     Long countByCategoryCode(String categoryCode);
+
+    /**
+     * 保存器械信息（新增或更新）
+     */
+    boolean saveEquipment(EquipmentSaveDTO dto);
+
+    /**
+     * 删除器械
+     */
+    boolean deleteEquipment(Integer id);
 }
