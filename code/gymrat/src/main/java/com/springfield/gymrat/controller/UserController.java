@@ -1,12 +1,16 @@
 package com.springfield.gymrat.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.springfield.gymrat.common.Result;
 import com.springfield.gymrat.common.context.UserContext;
 import com.springfield.gymrat.config.OssConfig;
 import com.springfield.gymrat.dto.RegisterDTO;
 import com.springfield.gymrat.dto.ProfileUpdateDTO;
+import com.springfield.gymrat.dto.UserQueryDTO;
 import com.springfield.gymrat.dto.UsernameUpdateDTO;
 import com.springfield.gymrat.service.UserService;
+import com.springfield.gymrat.vo.PageResult;
+import com.springfield.gymrat.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -149,6 +153,31 @@ public class UserController {
         } catch (Exception e) {
             log.error("上传头像失败", e);
             return Result.error("上传失败：" + e.getMessage());
+        }
+    }
+    /**
+     * 管理员：分页查询用户列表
+     */
+    @GetMapping("/admin/list")
+    public Result<PageResult<UserVO>> getUserList(
+            Page<UserVO> page,
+            UserQueryDTO queryDTO) {
+        PageResult<UserVO> result = userService.getUserList(page, queryDTO);
+        return Result.success(result);
+    }
+
+    /**
+     * 管理员：更新用户状态（启用/禁用）
+     */
+    @PutMapping("/admin/status/{userId}")
+    public Result<Boolean> updateUserStatus(
+            @PathVariable Long userId,
+            @RequestParam Integer status) {
+        boolean success = userService.updateUserStatus(userId, status);
+        if (success) {
+            return Result.success();
+        } else {
+            return Result.error("用户状态更新失败");
         }
     }
 }

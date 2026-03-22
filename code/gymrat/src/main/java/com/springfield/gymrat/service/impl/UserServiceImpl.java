@@ -1,21 +1,23 @@
 package com.springfield.gymrat.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.springfield.gymrat.common.exception.BusinessException;
-import com.springfield.gymrat.dto.LoginDTO;
-import com.springfield.gymrat.dto.LoginResultDTO;
-import com.springfield.gymrat.dto.ProfileUpdateDTO;
-import com.springfield.gymrat.dto.RegisterDTO;
+import com.springfield.gymrat.dto.*;
 import com.springfield.gymrat.entity.User;
 import com.springfield.gymrat.entity.UserProfile;
 import com.springfield.gymrat.mapper.UserMapper;
 import com.springfield.gymrat.service.UserService;
 import com.springfield.gymrat.mapper.UserProfileMapper;
 import com.springfield.gymrat.vo.DataOverviewVO;
+import com.springfield.gymrat.vo.PageResult;
 import com.springfield.gymrat.vo.UserProfileVO;
+import com.springfield.gymrat.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,8 @@ import com.springfield.gymrat.mapper.EquipmentMapper;
 import com.springfield.gymrat.mapper.GymStoreMapper;
 import com.springfield.gymrat.mapper.CoachMapper;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -257,5 +261,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         vo.setTotalCoaches(totalCoaches);
 
         return vo;
+    }
+
+    @Override
+    public PageResult<UserVO> getUserList(Page<UserVO> page, UserQueryDTO queryDTO) {
+        // 构建查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        // 模糊搜索：通过id/username/phone查询
+        if (queryDTO != null) {
+            if (queryDTO.getKeyword() != null && !queryDTO.getKeyword().trim().isEmpty()) {
+                queryWrapper.and(wrapper -> wrapper
+                        .like("username", queryDTO.getKeyword())
+                        .or()
+                        .like("phone", queryDTO.getKeyword())
+                        .or()
+                        .eq("id", queryDTO.getKeyword())  // 直接匹配ID
+                );
+            }
+
+            if (queryDTO.getStatus() != null) {
+                queryWrapper.eq("status", queryDTO.getStatus());
+            }
+        }
+
+        // 排除已删除的用户
+        queryWrapper.ne("status", -1);
+
+        queryWrapper.orderByDesc("created_at");
+
+        // 执行分页查询
+        Page<User> userPage = this.baseMapper.selectPage(
+                new Page<>(page.getCurrent(), page.getSize()),
+                queryWrapper
+        );
+
+        // 转换为 VO
+        List<UserVO> userVOList = userPage.getRecords().stream().map(user -> {
+            UserVO vo = new UserVO();
+            BeanUtils.copyProperties(user, vo);
+            return vo;
+        }).collect(Collectors.toList());
+
+        // 简化：直接使用 PageResult 的构造函数
+        return new PageResult<>(
+                userVOList,
+                userPage.getTotal(),
+                (int) userPage.getCurrent(),
+                (int) userPage.getSize()
+        );
+    }
+
+    @Override
+    public boolean updateUserStatus(Long userId, Integer status) {
+        // 验证状态值是否有效
+        if (status == null || (status != 0 && status != 1)) {
+            return false;
+        }
+
+        // 查找用户
+        User user = this.getById(userId);
+        if (user == null) {
+            return false;
+        }
+
+        // 更新状态
+        user.setStatus(status);
+        return this.updateById(user);
     }
 }

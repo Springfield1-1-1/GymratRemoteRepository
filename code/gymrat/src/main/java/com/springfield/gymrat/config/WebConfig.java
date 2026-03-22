@@ -27,6 +27,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "/error"
                 );
         registry.addInterceptor(adminAuthInterceptor)
-                .addPathPatterns("/api/admin/**");  // 保护所有 /api/admin 开头的接口
+                .addPathPatterns(
+                        "/api/admin/**",
+                        "/api/user/admin/**"
+                );
     }
 }
