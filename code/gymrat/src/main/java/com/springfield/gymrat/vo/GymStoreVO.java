@@ -24,5 +24,7 @@ public class GymStoreVO {
 
     private String phone;
 
+    private Integer status;
+
     private List<CoachVO> coaches;
 }

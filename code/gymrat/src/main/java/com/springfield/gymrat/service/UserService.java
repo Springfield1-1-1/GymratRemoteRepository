@@ -1,12 +1,13 @@
 package com.springfield.gymrat.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.springfield.gymrat.dto.LoginResultDTO;
-import com.springfield.gymrat.dto.ProfileUpdateDTO;
-import com.springfield.gymrat.dto.RegisterDTO;
-import com.springfield.gymrat.dto.LoginDTO;
+import com.springfield.gymrat.dto.*;
 import com.springfield.gymrat.entity.User;
+import com.springfield.gymrat.vo.DataOverviewVO;
+import com.springfield.gymrat.vo.PageResult;
 import com.springfield.gymrat.vo.UserProfileVO;
+import com.springfield.gymrat.vo.UserVO;
 
 public interface UserService extends IService<User>{
     /**
@@ -36,4 +37,19 @@ public interface UserService extends IService<User>{
      * 更新用户头像
      */
     void updateAvatar(Long userId, String avatarUrl);
+
+    /**
+     * 获取数据概览
+     */
+    DataOverviewVO getDataOverview();
+
+    /**
+     * 分页查询用户列表
+     */
+    PageResult<UserVO> getUserList(Page<UserVO> page, UserQueryDTO queryDTO);
+
+    /**
+     * 更新用户状态（启用/禁用）
+     */
+    boolean updateUserStatus(Long userId, Integer status);
 }

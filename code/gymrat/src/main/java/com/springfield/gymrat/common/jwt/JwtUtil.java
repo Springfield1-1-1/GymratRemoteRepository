@@ -41,6 +41,11 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);
+        String role = "user";
+        if ("admin".equals(username)) {
+            role = "admin";
+        }
+        claims.put("role", role);
 
         long expiration = rememberMe ? expirationMonth : expirationDay;
         Date now = new Date();
@@ -53,6 +58,14 @@ public class JwtUtil {
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    /**
+     * 从令牌中获取角色
+     */
+    public String getRoleFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("role", String.class);
     }
 
     /**

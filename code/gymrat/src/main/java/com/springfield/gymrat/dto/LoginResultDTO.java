@@ -10,4 +10,5 @@ public class LoginResultDTO {
     private String tokenType = "Bearer";
     private Long expiresIn;  // 过期时间（秒）
     private String avatarUrl;
+    private String role;
 }
