@@ -13,10 +13,14 @@ public class CoachVO {
 
     private Long id;
 
+    private Long storeId;
+
     private String coachName;
 
     private String coachAvatar;
 
     private String specialty;
+
+    private Integer status;
 
 }

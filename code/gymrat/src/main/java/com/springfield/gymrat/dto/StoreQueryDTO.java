@@ -11,5 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StoreQueryDTO {
 
+    private String keyword;
+
     private String city;
+
+    private Integer status;
 }
