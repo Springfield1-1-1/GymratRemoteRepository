@@ -31,7 +31,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/api/admin/**",
                         "/api/user/admin/**",
                         "/api/equipment/save",
-                        "/api/equipment/*"
+                        "/api/equipment/upload-image",
+                        "/api/equipment/delete/{id}"
                 );
     }
 }

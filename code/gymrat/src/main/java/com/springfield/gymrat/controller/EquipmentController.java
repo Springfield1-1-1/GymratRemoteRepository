@@ -7,6 +7,9 @@ import com.springfield.gymrat.vo.CategoryVO;
 import com.springfield.gymrat.vo.PageResult;
 import com.springfield.gymrat.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.springfield.gymrat.dto.EquipmentSaveDTO;
@@ -44,6 +47,7 @@ public class EquipmentController {
      * 分页查询器械列表
      */
     @GetMapping("/list")
+    @Cacheable(cacheNames = "equipmentListCache", key = "'list:' + #categoryCode + ':' + #keyword + ':' + #page + ':' + #pageSize", condition = "#page == 1 and #pageSize == 10")
     public Result<PageResult<com.springfield.gymrat.vo.EquipmentVO>> getEquipmentList(
             @RequestParam(required = false) String categoryCode,
             @RequestParam(required = false) String keyword,
@@ -81,6 +85,7 @@ public class EquipmentController {
      * 保存器械信息（新增或更新）
      */
     @PostMapping("/save")
+    @CacheEvict(cacheNames = "equipmentListCache", allEntries = true)
     public Result<Void> saveEquipment(@RequestBody @Valid EquipmentSaveDTO dto) {
         boolean success = equipmentService.saveEquipment(dto);
         if (success) {
@@ -94,6 +99,7 @@ public class EquipmentController {
      * 删除器械
      */
     @DeleteMapping("/{id}")
+    @CacheEvict(cacheNames = "equipmentListCache", allEntries = true)
     public Result<Void> deleteEquipment(@PathVariable Integer id) {
         boolean success = equipmentService.deleteEquipment(id);
         if (success) {
