@@ -11,10 +11,12 @@ import com.springfield.gymrat.vo.Result;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import com.springfield.gymrat.config.OssConfig;
 
 @Slf4j
@@ -29,6 +31,7 @@ public class GymStoreController {
     private GymStoreService gymStoreService;
 
     @GetMapping
+    @Cacheable(cacheNames = "gymStoresCache", key = "'city:' + (#city != null ? #city : 'all')")
     public Result<List<GymStoreVO>> getStoresByCity(@RequestParam(required = false) String city) {
         Long userId = UserContext.getCurrentUserId();
         if (userId == null) {
@@ -40,6 +43,7 @@ public class GymStoreController {
     }
 
     @GetMapping("/{storeId}")
+    @Cacheable(cacheNames = "gymStoreDetailCache", key = "#storeId")
     public Result<GymStoreVO> getStoreDetail(@PathVariable Long storeId) {
         Long userId = UserContext.getCurrentUserId();
         if (userId == null) {
@@ -57,6 +61,7 @@ public class GymStoreController {
      * 管理员：保存门店信息（新增或更新）
      */
     @PostMapping("/save")
+    @CacheEvict(cacheNames = {"gymStoresCache", "gymStoreDetailCache", "gymStoreListCache"}, allEntries = true)
     public Result<Void> saveStore(@RequestBody @Valid GymStoreSaveDTO dto) {
         boolean success = gymStoreService.saveStore(dto);
         if (success) {
@@ -70,6 +75,7 @@ public class GymStoreController {
      * 管理员：删除门店
      */
     @DeleteMapping("/{id}")
+    @CacheEvict(cacheNames = {"gymStoresCache", "gymStoreDetailCache", "gymStoreListCache"}, allEntries = true)
     public Result<Void> deleteStore(@PathVariable Long id) {
         boolean success = gymStoreService.deleteStore(id);
         if (success) {
@@ -83,6 +89,7 @@ public class GymStoreController {
      * 管理员：分页查询门店列表
      */
     @GetMapping("/list")
+    @Cacheable(cacheNames = "gymStoreListCache", key = "#root.methodName + ':' + #page.current + ':' + #page.size + ':' + (#queryDTO.city != null ? #queryDTO.city : '') + ':' + (#queryDTO.keyword != null ? #queryDTO.keyword : '')", condition = "#page.current == 1 and #page.size == 10")
     public Result<PageResult<GymStoreVO>> getStoreList(
             Page<GymStoreVO> page,
             StoreQueryDTO queryDTO) {
