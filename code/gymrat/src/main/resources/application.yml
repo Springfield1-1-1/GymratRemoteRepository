@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/springfield_gymrat?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
+    username: springfield_gymrat
+    password: 2YZzMbTd7yWDPDY3
 
   servlet:
     multipart:
@@ -13,7 +13,6 @@ spring:
     redis:
       host: localhost
       port: 6379
-      #password: 123456
       database: 1
 
 mybatis-plus:
