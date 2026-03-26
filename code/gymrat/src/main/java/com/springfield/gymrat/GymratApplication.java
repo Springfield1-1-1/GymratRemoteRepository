@@ -15,4 +15,3 @@ public class GymratApplication {
     }
 
 }
-//TODO:更改数据库配置
