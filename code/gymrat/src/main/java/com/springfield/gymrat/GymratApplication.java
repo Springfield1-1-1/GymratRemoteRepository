@@ -5,9 +5,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
-@EnableCaching
+@EnableCaching  // 开启缓存功能
 @SpringBootApplication
-@MapperScan("com.springfield.gymrat.mapper")
+@MapperScan("com.springfield.gymrat.mapper")    // 扫描mapper接口
 public class GymratApplication {
 
     public static void main(String[] args) {

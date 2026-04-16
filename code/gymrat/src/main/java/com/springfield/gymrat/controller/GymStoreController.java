@@ -30,6 +30,7 @@ public class GymStoreController {
     @Autowired
     private GymStoreService gymStoreService;
 
+    // 获取门店列表
     @GetMapping
     @Cacheable(cacheNames = "gymStoresCache", key = "'city:' + (#city != null ? #city : 'all')")
     public Result<List<GymStoreVO>> getStoresByCity(@RequestParam(required = false) String city) {
@@ -42,6 +43,7 @@ public class GymStoreController {
         return Result.success("获取成功", stores);
     }
 
+    // 获取门店详情
     @GetMapping("/{storeId}")
     @Cacheable(cacheNames = "gymStoreDetailCache", key = "#storeId")
     public Result<GymStoreVO> getStoreDetail(@PathVariable Long storeId) {
@@ -93,13 +95,6 @@ public class GymStoreController {
     public Result<PageResult<GymStoreVO>> getStoreList(
             Page<GymStoreVO> page,
             StoreQueryDTO queryDTO) {
-        log.info("=== [DEBUG] 开始查询门店列表 ===");
-        log.info("=== [DEBUG] 页码：{}, 每页数量：{}", page.getCurrent(), page.getSize());
-        log.info("=== [DEBUG] 查询条件：keyword={}, city={}, status={}",
-                queryDTO != null ? queryDTO.getKeyword() : "null",
-                queryDTO != null ? queryDTO.getCity() : "null",
-                queryDTO != null ? queryDTO.getStatus() : "null");
-
         PageResult<GymStoreVO> result = gymStoreService.getStoreList(page, queryDTO);
 
         log.info("=== [DEBUG] 查询结果：总数={}, 记录数={}", result.getTotal(), result.getRecords().size());

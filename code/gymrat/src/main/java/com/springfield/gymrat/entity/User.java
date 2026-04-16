@@ -10,12 +10,12 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("users")
+@TableName("users") //没有这个注解，MP 会默认使用类名的小写形式
 public class User implements Serializable{
     private static final long serialVersionUID = 1L;
 
 
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)    // 主键自增
     private Long id;
 
     private String username;
@@ -34,10 +34,10 @@ public class User implements Serializable{
 
     private String lastLoginIp;
 
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT) // 插入时自动填充
     private LocalDateTime createdAt;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE) // 插入和更新时自动填充
     private LocalDateTime updatedAt;
 
 }

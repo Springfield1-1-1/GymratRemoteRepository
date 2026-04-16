@@ -1,5 +1,7 @@
 package com.springfield.gymrat.common.exception;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 /**
@@ -30,6 +32,8 @@ public enum ErrorCode {
     SYSTEM_ERROR(5000, "系统错误"),
     DATABASE_ERROR(5001, "数据库错误");
 
+    @EnumValue
+    @JsonValue
     private final Integer code;
     private final String message;
 

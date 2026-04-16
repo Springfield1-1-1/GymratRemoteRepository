@@ -23,5 +23,4 @@ public class RegisterDTO {
     )
     private String password;
 
-    // 没有验证码字段
 }

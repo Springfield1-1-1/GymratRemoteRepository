@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/fitness-plan")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // 允许所有源的请求 允许跨域
 public class FitnessPlanController {
 
     @Autowired
@@ -19,19 +19,10 @@ public class FitnessPlanController {
 
     @PostMapping("/save")
     public Result<FitnessPlanVO> savePlan(@RequestBody FitnessPlanSaveDTO saveDTO) {
-        System.out.println("========================================");
-        System.out.println("💾 保存健身计划");
-        System.out.println("----------------------------------------");
 
-        // 优先从 UserContext 获取
         Long userId = UserContext.getCurrentUserId();
-        System.out.println("👤 UserContext userId: " + userId);
-        System.out.println("📦 saveDTO.userId: " + saveDTO.getUserId());
-        System.out.println("📦 saveDTO.planData: " + saveDTO.getPlanData());
-        System.out.println("========================================");
 
         if (userId == null) {
-            System.out.println("❌ 错误：用户未登录");
             return Result.error("用户未登录");
         }
 
@@ -40,10 +31,8 @@ public class FitnessPlanController {
 
         try {
             FitnessPlanVO result = fitnessPlanService.savePlan(saveDTO);
-            System.out.println("✅ 保存成功，planId: " + result.getId());
             return Result.success("保存成功", result);
         } catch (Exception e) {
-            System.out.println("❌ 保存失败：" + e.getMessage());
             e.printStackTrace();
             return Result.error("保存失败：" + e.getMessage());
         }

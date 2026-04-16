@@ -44,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final GymStoreMapper gymStoreMapper;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)   // 开启事务，所有异常都回滚
     public Long register(RegisterDTO dto) {
         // 1. 验证用户名和手机号是否已存在
         if (userMapper.countByUsername(dto.getUsername()) > 0) {
@@ -78,8 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         // 1. 根据用户名查询用户
         User user = userMapper.selectOne(
-                new LambdaQueryWrapper<User>()
-                        .eq(User::getUsername, dto.getUsername())
+                new LambdaQueryWrapper<User>().eq(User::getUsername, dto.getUsername())
         );
 
         if (user == null) {
@@ -94,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 3. 验证密码
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) {
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPasswordHash())) { // 密码不匹配
             log.warn("登录失败: 密码错误 - {}", dto.getUsername());
             throw new BusinessException(3001, "用户名或密码错误");
         }
@@ -103,12 +102,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String token = jwtUtil.generateToken(
                 user.getId(),
                 user.getUsername(),
-                Boolean.TRUE.equals(dto.getRememberMe())
+                Boolean.TRUE.equals(dto.getRememberMe())    //防止rememberMe=null抛出空指针异常
         );
 
         // 5. 更新最后登录时间
         user.setUpdatedAt(LocalDateTime.now());
-        userMapper.updateById(user);
+        userMapper.updateById(user);    //调用mp自动填充
 
         // 6. 构建返回结果
         LoginResultDTO result = new LoginResultDTO();
@@ -210,10 +209,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateUsername(Long userId, String username) {
+        //检查新用户名是否已经被其他用户占用
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, username);
         wrapper.ne(User::getId, userId);
-
         Long count = baseMapper.selectCount(wrapper);
         if (count > 0) {
             throw new BusinessException(ErrorCode.USER_EXIST.getMessage());
@@ -285,7 +284,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
 
-        // 排除已删除的用户
+        // 排除已逻辑删除的用户
         queryWrapper.ne("status", -1);
 
         queryWrapper.orderByDesc("created_at");

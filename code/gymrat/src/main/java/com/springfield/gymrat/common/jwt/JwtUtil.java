@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret:springfield-gymrat-secret-key-2024}")
+    @Value("${jwt.secret:springfield-gymrat-secret-key-2026}")// 读取密钥&默认密钥
     private String secret;
 
     @Value("${jwt.expiration.day:86400}")  // 默认1天（秒）
@@ -51,13 +51,13 @@ public class JwtUtil {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration * 1000);
 
-        return Jwts.builder()
-                .claims(claims)
-                .subject(username)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
+        return Jwts.builder()   // 创建JWT构建器
+                .claims(claims) // 添加自定义声明
+                .subject(username)  // 设置用户名
+                .issuedAt(now)  // 设置令牌生成时间
+                .expiration(expiryDate) // 设置令牌过期时间
+                .signWith(getSigningKey())  // 设置签名密钥
+                .compact(); // 生成令牌
     }
 
     /**
@@ -109,11 +109,11 @@ public class JwtUtil {
      * 解析令牌
      */
     private Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+            return Jwts.parser()    // 创建JWT解析器
+                .verifyWith(getSigningKey())//  验证签名防止篡改
+                .build()    //构建解析器实例
+                .parseSignedClaims(token)   // 解析令牌
+                .getPayload();  // 获取负载
     }
 
     /**
