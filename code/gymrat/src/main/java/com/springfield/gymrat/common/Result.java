@@ -5,7 +5,7 @@ import java.io.Serializable;
 @Data
 public class Result<T> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;    // 序列化版本号
 
     private Integer code;
 
@@ -15,9 +15,9 @@ public class Result<T> implements Serializable {
 
     private Long timestamp;
 
-    public Result() {
+    /*public Result() {
         this.timestamp = System.currentTimeMillis();
-    }
+    }*/
 
     public Result(Integer code, String message, T data) {
         this.code = code;

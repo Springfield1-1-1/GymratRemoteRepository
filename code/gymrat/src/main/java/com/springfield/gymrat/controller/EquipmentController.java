@@ -47,7 +47,7 @@ public class EquipmentController {
      * 分页查询器械列表
      */
     @GetMapping("/list")
-    @Cacheable(cacheNames = "equipmentListCache", key = "'list:' + #categoryCode + ':' + #keyword + ':' + #page + ':' + #pageSize", condition = "#page == 1 and #pageSize == 10")
+    @Cacheable(cacheNames = "equipmentListCache", key = "'list:' + #categoryCode + ':' + #keyword + ':' + #page + ':' + #pageSize", condition = "#page == 1 and #pageSize == 10")   //只缓存第一页
     public Result<PageResult<com.springfield.gymrat.vo.EquipmentVO>> getEquipmentList(
             @RequestParam(required = false) String categoryCode,
             @RequestParam(required = false) String keyword,
@@ -85,7 +85,7 @@ public class EquipmentController {
      * 保存器械信息（新增或更新）
      */
     @PostMapping("/save")
-    @CacheEvict(cacheNames = "equipmentListCache", allEntries = true)
+    @CacheEvict(cacheNames = "equipmentListCache", allEntries = true)//清除所有缓存
     public Result<Void> saveEquipment(@RequestBody @Valid EquipmentSaveDTO dto) {
         boolean success = equipmentService.saveEquipment(dto);
         if (success) {
@@ -118,13 +118,14 @@ public class EquipmentController {
             return Result.error("请选择要上传的文件");
         }
 
-        log.info("OSS 配置信息 - accessKeyId: {}***, endpoint: {}, bucketName: {}",
+        /*log.info("OSS 配置信息 - accessKeyId: {}***, endpoint: {}, bucketName: {}",
                 ossConfig.getAccessKeyId() != null ? ossConfig.getAccessKeyId().substring(0, Math.min(8, ossConfig.getAccessKeyId().length())) : "null",
                 ossConfig.getEndpoint(),
-                ossConfig.getBucketName());
+                ossConfig.getBucketName());*/
 
         try {
             String originalFilename = file.getOriginalFilename();
+            //  获取文件扩展名/不包含则用.jpg
             String fileExtension = originalFilename != null && originalFilename.contains(".")
                     ? originalFilename.substring(originalFilename.lastIndexOf("."))
                     : ".jpg";
@@ -135,7 +136,7 @@ public class EquipmentController {
             com.aliyun.oss.ClientBuilderConfiguration conf = new com.aliyun.oss.ClientBuilderConfiguration();
             conf.setMaxConnections(100);
 
-            com.aliyun.oss.OSS ossClient = new com.aliyun.oss.OSSClientBuilder().build(
+            com.aliyun.oss.OSS ossClient = new com.aliyun.oss.OSSClientBuilder().build( // 创建OSSClient实例
                     ossConfig.getEndpoint(),
                     ossConfig.getAccessKeyId(),
                     ossConfig.getAccessKeySecret(),

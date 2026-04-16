@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
-@RequiredArgsConstructor
+@RequiredArgsConstructor    //使用构造器注入比@Autowired好，不容易出现依赖循环&Spring自动进行依赖注入
 @Validated
 public class AuthController {
 

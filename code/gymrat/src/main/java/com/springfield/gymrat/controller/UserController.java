@@ -103,6 +103,7 @@ public class UserController {
     /**
      * 上传头像
      */
+    //TODO: 抽取服务层业务解耦
     @PostMapping("/avatar")
     public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
         Long userId = UserContext.getCurrentUserId();
@@ -113,11 +114,6 @@ public class UserController {
         if (file.isEmpty()) {
             return Result.error("请选择要上传的文件");
         }
-
-        log.info("OSS 配置信息 - accessKeyId: {}***, endpoint: {}, bucketName: {}",
-                ossConfig.getAccessKeyId() != null ? ossConfig.getAccessKeyId().substring(0, Math.min(8, ossConfig.getAccessKeyId().length())) : "null",
-                ossConfig.getEndpoint(),
-                ossConfig.getBucketName());
 
         try {
             String originalFilename = file.getOriginalFilename();

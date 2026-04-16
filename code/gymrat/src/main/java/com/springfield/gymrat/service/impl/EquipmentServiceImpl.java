@@ -63,8 +63,6 @@ public class EquipmentServiceImpl extends ServiceImpl<EquipmentMapper, Equipment
             equipment.setUsageDescription(dto.getUsageDescription());
             equipment.setCategoryId(dto.getCategoryId());
             equipment.setSortOrder(dto.getSortOrder());
-
-            // 自动设置更新时间
             equipment.setUpdateTime(LocalDateTime.now());
         } else {
             // 新增

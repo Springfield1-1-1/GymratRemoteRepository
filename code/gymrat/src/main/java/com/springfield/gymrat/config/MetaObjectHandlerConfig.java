@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Component
 public class MetaObjectHandlerConfig implements MetaObjectHandler {
 
+    //MP自动填充（严格模式）
     @Override
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "createdAt", LocalDateTime.class, LocalDateTime.now());

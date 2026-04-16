@@ -35,7 +35,7 @@ public class FitnessPlanServiceImpl implements FitnessPlanService {
         if (existingPlan != null) {
             // 已有计划，执行更新
             try {
-                existingPlan.setPlanData(objectMapper.writeValueAsString(saveDTO.getPlanData()));
+                existingPlan.setPlanData(objectMapper.writeValueAsString(saveDTO.getPlanData()));// 将计划数据转换为JSON字符串
                 existingPlan.setUpdateTime(java.time.LocalDateTime.now());
             } catch (JsonProcessingException e) {
                 throw new BusinessException("计划数据转换失败");

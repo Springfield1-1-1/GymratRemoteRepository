@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
+@Builder    //可用builder()构造对象
 @NoArgsConstructor
 @AllArgsConstructor
 public class FitnessPlanSaveDTO {

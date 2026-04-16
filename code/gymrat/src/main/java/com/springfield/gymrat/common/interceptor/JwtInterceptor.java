@@ -17,7 +17,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 1. 放行登录和注册接口
+        // 1. 放行登录、注册和公开接口
         String requestURI = request.getRequestURI();
         if (requestURI.contains("/api/user/login") ||
                 requestURI.contains("/api/user/register") ||

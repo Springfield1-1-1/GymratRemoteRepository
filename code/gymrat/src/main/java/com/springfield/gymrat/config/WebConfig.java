@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {    // 拦截器配置
 
     private final JwtInterceptor jwtInterceptor;
 
