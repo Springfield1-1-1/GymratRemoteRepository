@@ -18,6 +18,7 @@ public class WebSocketServer {
 
     // 存储所有在线的 Session，key 为 sid
     private static final Map<String, Session> SESSION_POOL = new ConcurrentHashMap<>();
+    //使用ConcurrentHashMap保证了线程安全
 
     // 存储所有在线客服的 ID
     private static final Map<String, String> ONLINE_CUSTOMERS = new ConcurrentHashMap<>();

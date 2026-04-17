@@ -1,12 +1,12 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/springfield_gymrat?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true #支持重写批量SQL语句
-    #url: jdbc:mysql://localhost:3306/springfield_gymrat?serverTimezone=Asia/Shanghai
-    username: springfield_gymrat
-    #username: root
-    password: 2YZzMbTd7yWDPDY3
-    #password: 123456
+    #url: jdbc:mysql://localhost:3306/springfield_gymrat?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true #支持重写批量SQL语句
+    url: jdbc:mysql://localhost:3306/springfield_gymrat?serverTimezone=Asia/Shanghai
+    #username: springfield_gymrat
+    username: root
+    #password: 2YZzMbTd7yWDPDY3
+    password: 123456
 
   servlet:
     multipart:
