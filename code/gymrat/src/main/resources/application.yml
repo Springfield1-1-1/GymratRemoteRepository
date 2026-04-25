@@ -8,6 +8,13 @@ spring:
     #password: 2YZzMbTd7yWDPDY3
     password: 123456
 
+  boot:
+    admin:
+      client:
+        url: http://localhost:8080  #注册
+        instance:
+          service-host-type: ip      #使用 IP 而不是主机名
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -46,4 +53,14 @@ aliyun:
     access-key-secret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
     endpoint: oss-cn-beijing.aliyuncs.com
     bucket-name: springfield-gymrat
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # 开放所有端点（开发环境方便调试，生产环境建议只开需要的）
+        include: "*"
+  endpoint:
+    health:
+      show-details: always # 总是显示健康检查的详细信息（如数据库是否连通）
 
